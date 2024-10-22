@@ -8,7 +8,7 @@ RM = rm -f
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SRC = ./src/*.c #! Add all the source files here and delete the *.c
+SRC = ./src/pipex.c
 OBJ = $(SRC:.c=.o)
 
 INCLUDES = -I./include -I$(LIBFT_DIR)
