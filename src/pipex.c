@@ -19,7 +19,7 @@
 // en el [1] se lee en el [0], es decir, se escribe en el pipe y se lee del pipe
 // gracias a que el pipe es un buffer en memoria.
 
-void	execute_command(char *cmd[], char **envp, int input_fd, int output_fd)
+void	execute_command(t_command *command, char **envp, int input_fd, int output_fd)
 {
 	pid_t	pid;
 
@@ -41,14 +41,16 @@ void	execute_command(char *cmd[], char **envp, int input_fd, int output_fd)
 			dup2(output_fd, 1);
 			close(output_fd);
 		}
-		execve(cmd[0], cmd, envp);
-		// TODO: The first string in cmd must be the command and not the path, for the correct execution of execve
+		execve(command->path, command->argv, envp);
 		perror("execve failed");
 		exit(EXIT_FAILURE);
 	}
+	else
+	{
+	}
 }
 
-void	pipex(char ***commands, char **envp, int infile, int outfile)
+void	pipex(t_command **commands, char **envp, int infile, int outfile)
 {
 	int		pipe1[2];
 
@@ -61,10 +63,10 @@ void	pipex(char ***commands, char **envp, int infile, int outfile)
 	}
 	execute_command(commands[0], envp, infile, pipe1[1]);
 	close(pipe1[1]);
-	free(commands[0]);
+	free(commands[0]); // TODO: free the command struct
 	execute_command(commands[1], envp, pipe1[0], outfile);
 	close(pipe1[0]);
-	free(commands[1]);
+	free(commands[1]); // TODO: free the command struct
 	wait(NULL);
 	wait(NULL);
 /*
@@ -138,7 +140,7 @@ void	pipex(char ***commands, char **envp, int infile, int outfile)
 	*/
 }
 
-char	*get_cmd(char **cmd_name, char **paths)
+char	*get_command_path(char *cmd_name, char **paths)
 {
 	char	*cmd_path;
 	size_t	i;
@@ -146,59 +148,52 @@ char	*get_cmd(char **cmd_name, char **paths)
 	i = 0;
 	while (paths[i] != NULL)
 	{
-		cmd_path = ft_strjoin(paths[i], *cmd_name);
-		printf("Checking cmd %s like path %s\n", *cmd_name, cmd_path);
+		// TODO: Check if the command name is a route: "./" or "/"
+		cmd_path = ft_strjoin(paths[i], cmd_name);
 		if (cmd_path == NULL)
 			return (NULL); // malloc error
 		if (access(cmd_path, F_OK | X_OK) == 0)
-		{
-			free(*cmd_name);
-			*cmd_name = cmd_path;
-			return (*cmd_name);
-		}
+			return (cmd_path);
 		free(cmd_path);
 		i++;
 	}
-	return (NULL);
+	return (NULL); // not find
 }
 
-char	***create_commands(int argc, char *argv[], char **paths)
+t_command	**create_commands(int argc, char *argv[], char **paths)
 {
-	char	***commands;
-	int		i;
+	t_command	**commands;
+	int				i;
 
-	commands = (char ***)malloc(sizeof(char **) * (argc - 3));
+	commands = (t_command **)malloc(sizeof(t_command *) * (argc - 3));
 	if (!commands)
 		return (NULL);
 	i = 0;
 	while (i + 2 < argc - 1)
 	{
-		commands[i] = ft_split(argv[i + 2], ' ');
+		commands[i] = (t_command *)malloc(sizeof(t_command));
 		if (commands[i] == NULL)
-		{
-			// TODO: free the double matrix
-			return (NULL);
-		}
-		printf("For %d of %d - command %s\n", i + 2, argc, commands[i][0]);
-		if (get_cmd(&commands[i][0], paths) == NULL)
-		{
-			// TODO: free the double matrix
-			return (NULL);
-		}
+			return (NULL); // TODO: free arr struct
+		commands[i]->argv = ft_split(argv[i + 2], ' ');
+		if (commands[i]->argv == NULL)
+			return (NULL); // TODO: free arr struct
+		commands[i]->path = get_command_path(commands[i]->argv[0], paths);
+		if (commands[i]->path == NULL)
+			return (NULL); // TODO: free arr struct
 		i++;
 	}
-	commands[i - 2] = NULL;
+	commands[i] = NULL;
 	return (commands);
 }
 
 char	**get_paths(char **envp)
 {
-	size_t	i;
 	char	**paths;
 	char	*tmp;
+	size_t	i;
 
 	i = 0;
-	while (envp && envp[i] != NULL)
+	while (envp != NULL && envp[i] != NULL)
 	{
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
 		{
@@ -210,7 +205,7 @@ char	**get_paths(char **envp)
 			{
 				tmp = ft_strjoin(paths[i], "/");
 				if (tmp == NULL)
-					return (NULL); // TODO
+					return (NULL); // TODO: free the matrix
 				free(paths[i]);
 				paths[i] = tmp;
 				i++;
@@ -224,7 +219,7 @@ char	**get_paths(char **envp)
 
 int	main(int argc, char *argv[], char **envp)
 {
-	char	***commands;
+	t_command **commands;
 	char	**paths;
 	int		infile;
 	int		outfile;
@@ -271,6 +266,7 @@ int	main(int argc, char *argv[], char **envp)
 
 	pipex(commands, envp, infile, outfile);
 
+	// TODO: free the structs and the paths matrix
 	free(paths);
 	close(infile);
 	close(outfile);
