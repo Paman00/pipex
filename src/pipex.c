@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 22:45:04 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/23 22:46:50 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/24 21:19:06 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 // en el [1] se lee en el [0], es decir, se escribe en el pipe y se lee del pipe
 // gracias a que el pipe es un buffer en memoria.
 
-void	execute_command(t_command *command, char **envp, int input_fd, int output_fd)
+pid_t	execute_command(char **command, char **envp, int in_fd, int out_fd)
 {
 	pid_t	pid;
 
@@ -31,26 +31,24 @@ void	execute_command(t_command *command, char **envp, int input_fd, int output_f
 	}
 	if (pid == 0)
 	{
-		if (input_fd != 0)
+		if (in_fd != 0)
 		{
-			dup2(input_fd, 0);
-			close(input_fd);
+			dup2(in_fd, 0);
+			close(in_fd);
 		}
-		if (output_fd != 1)
+		if (out_fd != 1)
 		{
-			dup2(output_fd, 1);
-			close(output_fd);
+			dup2(out_fd, 1);
+			close(out_fd);
 		}
-		execve(command->path, command->argv, envp);
+		execve(command[0], command, envp);
 		perror("execve failed");
 		exit(EXIT_FAILURE);
 	}
-	else
-	{
-	}
+	return (pid);
 }
 
-void	pipex(t_command **commands, char **envp, int infile, int outfile)
+void	pipex(char ***commands, char **envp, int infile, int outfile)
 {
 	int		pipe1[2];
 
@@ -153,33 +151,33 @@ char	*get_command_path(char *cmd_name, char **paths)
 		if (cmd_path == NULL)
 			return (NULL); // malloc error
 		if (access(cmd_path, F_OK | X_OK) == 0)
+		{
+			free(cmd_name);
 			return (cmd_path);
+		}
 		free(cmd_path);
 		i++;
 	}
-	return (NULL); // not find
+	return (NULL);
 }
 
-t_command	**create_commands(int argc, char *argv[], char **paths)
+char	***create_commands(int argc, char *argv[], char **paths)
 {
-	t_command	**commands;
-	int				i;
+	char	***commands;
+	int		i;
 
-	commands = (t_command **)malloc(sizeof(t_command *) * (argc - 3));
-	if (!commands)
+	commands = (char ***)malloc(sizeof(char **) * (argc - 3));
+	if (commands == NULL)
 		return (NULL);
 	i = 0;
 	while (i + 2 < argc - 1)
 	{
-		commands[i] = (t_command *)malloc(sizeof(t_command));
+		commands[i] = ft_split(argv[i + 2], ' ');
 		if (commands[i] == NULL)
-			return (NULL); // TODO: free arr struct
-		commands[i]->argv = ft_split(argv[i + 2], ' ');
-		if (commands[i]->argv == NULL)
-			return (NULL); // TODO: free arr struct
-		commands[i]->path = get_command_path(commands[i]->argv[0], paths);
-		if (commands[i]->path == NULL)
-			return (NULL); // TODO: free arr struct
+			return (ft_free_str_trimatrix(commands));
+		commands[i][0] = get_command_path(commands[i][0], paths);
+		if (commands[i][0] == NULL)
+			return (ft_free_str_trimatrix(commands));
 		i++;
 	}
 	commands[i] = NULL;
@@ -198,14 +196,12 @@ char	**get_paths(char **envp)
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
 		{
 			paths = ft_split(envp[i] + 5, ':');
-			if (paths == NULL)
-				return (NULL); // TODO
 			i = 0;
-			while (paths[i] != NULL)
+			while (paths && paths[i] != NULL)
 			{
 				tmp = ft_strjoin(paths[i], "/");
 				if (tmp == NULL)
-					return (NULL); // TODO: free the matrix
+					return (ft_free_str_matrix(paths));
 				free(paths[i]);
 				paths[i] = tmp;
 				i++;
@@ -219,7 +215,7 @@ char	**get_paths(char **envp)
 
 int	main(int argc, char *argv[], char **envp)
 {
-	t_command **commands;
+	char	***commands;
 	char	**paths;
 	int		infile;
 	int		outfile;
@@ -240,7 +236,7 @@ int	main(int argc, char *argv[], char **envp)
 	infile = open(argv[1], O_RDONLY);
 	if (infile == -1)
 	{
-		free(paths);
+		ft_free_str_matrix(paths);
 		perror("infile open fail");
 		exit(EXIT_FAILURE);
 	}
@@ -248,7 +244,7 @@ int	main(int argc, char *argv[], char **envp)
 	outfile = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (outfile == -1)
 	{
-		free(paths);
+		ft_free_str_matrix(paths);
 		close(infile);
 		perror("outfile open fail");
 		exit(EXIT_FAILURE);
@@ -257,7 +253,7 @@ int	main(int argc, char *argv[], char **envp)
 	commands = create_commands(argc, argv, paths);
 	if (commands == NULL)
 	{
-		free(paths);
+		ft_free_str_matrix(paths);
 		close(infile);
 		close(outfile);
 		perror("commands creation fail");
@@ -266,8 +262,8 @@ int	main(int argc, char *argv[], char **envp)
 
 	pipex(commands, envp, infile, outfile);
 
-	// TODO: free the structs and the paths matrix
-	free(paths);
+	ft_free_str_trimatrix(commands);
+	ft_free_str_matrix(paths);
 	close(infile);
 	close(outfile);
 	return (0);
