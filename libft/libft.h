@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 19:41:11 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/24 20:55:33 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/25 22:14:12 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 
 char	*ft_free_str(char **str);
 char	**ft_free_str_matrix(char **matrix);
+char	**ft_free_str_matrix_r(char **matrix, size_t i);
 char	***ft_free_str_trimatrix(char ***matrix);
+char	***ft_free_str_trimatrix_r(char ***matrix, size_t i);
 
 #endif
