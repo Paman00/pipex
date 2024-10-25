@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 22:45:04 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/25 22:23:42 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/25 22:35:29 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,9 +125,9 @@ char	**create_command(char *cmd, char **paths)
 	if (command == NULL)
 		return (NULL);
 	cmd_path = get_cmd_path(command[0], paths);
-	free(command[0]);
 	if (cmd_path == NULL)
 		return (ft_free_str_matrix(command));
+	free(command[0]);
 	command[0] = cmd_path;
 	return (command);
 }
