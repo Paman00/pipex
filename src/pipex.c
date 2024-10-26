@@ -19,82 +19,6 @@
 // en el [1] se lee en el [0], es decir, se escribe en el pipe y se lee del pipe
 // gracias a que el pipe es un buffer en memoria.
 
-void	execute_cmd(char **command, char **envp, int in_fd, int out_fd)
-{
-	dup2(in_fd, 0);
-	close(in_fd);
-	dup2(out_fd, 1);
-	close(out_fd);
-	execve(command[0], command, envp);
-	perror("execve failed");
-	exit(EXIT_FAILURE);
-}
-
-void	execute_first_cmd(char **cmd, char **envp, char *infile, int pipe_fd[2])
-{
-	pid_t	pid;
-	int		in_fd;
-
-	pid = fork();
-	if (pid == -1)
-	{
-		close(pipe_fd[1]);
-		close(pipe_fd[0]);
-		perror("fork failed");
-		exit(EXIT_FAILURE);
-	}
-	if (pid == 0)
-	{
-		in_fd = open(infile, O_RDONLY);
-		if (in_fd == -1)
-		{
-			close(pipe_fd[1]);
-			close(pipe_fd[0]);
-			perror("infile open fail");
-			exit(EXIT_FAILURE);
-		}
-		close(pipe_fd[0]);
-		execute_cmd(cmd, envp, in_fd, pipe_fd[1]);
-		close(in_fd);
-	}
-	else
-		close(pipe_fd[1]);
-}
-
-void	execute_second_cmd(char **cmd, char **envp, int pipe_fd[2], char *ofile)
-{
-	pid_t	pid;
-	int		out_fd;
-
-	out_fd = open(ofile, O_WRONLY | O_CREAT | O_TRUNC, 0644); // TODO: probably must open the file in the child process ?, also francinette fails in test 11 if i make it in the child process
-	if (out_fd == -1)
-	{
-		close(pipe_fd[1]);
-		close(pipe_fd[0]);
-		perror("outfile open fail");
-		exit(EXIT_FAILURE);
-	}
-	pid = fork();
-	if (pid == -1)
-	{
-		close(pipe_fd[1]);
-		close(pipe_fd[0]);
-		close(out_fd);
-		perror("fork failed");
-		exit(EXIT_FAILURE);
-	}
-	if (pid == 0)
-	{
-		execute_cmd(cmd, envp, pipe_fd[0], out_fd);
-		close(pipe_fd[1]);
-	}
-	else
-	{
-		close(pipe_fd[0]);
-		close(out_fd);
-	}
-}
-
 char	*get_cmd_path(char *cmd_name, char **paths)
 {
 	char	*cmd_path;
@@ -132,6 +56,101 @@ char	**create_command(char *cmd, char **paths)
 	return (command);
 }
 
+void	execute_cmd(char **command, char **envp, int in_fd, int out_fd)
+{
+	dup2(in_fd, 0);
+	close(in_fd);
+	dup2(out_fd, 1);
+	close(out_fd);
+	execve(command[0], command, envp);
+	perror("execve failed");
+	exit(EXIT_FAILURE);
+}
+
+void	execute_first_cmd(char *argv[], char **envp, char **paths, int pipe_fd[2])
+{
+	pid_t	pid;
+	int		in_fd;
+	char	**cmd;
+
+	pid = fork();
+	if (pid == -1)
+	{
+		close(pipe_fd[1]);
+		close(pipe_fd[0]);
+		perror("fork failed");
+		exit(EXIT_FAILURE);
+	}
+	if (pid == 0)
+	{
+		cmd = create_command(argv[2], paths);
+		if (cmd == NULL)
+		{
+			close(pipe_fd[0]);
+			close(pipe_fd[1]);
+			perror("cmd1 creation fail");
+			exit(EXIT_FAILURE);
+		}
+		in_fd = open(argv[1], O_RDONLY);
+		if (in_fd == -1)
+		{
+			ft_free_str_matrix(cmd);
+			close(pipe_fd[1]);
+			close(pipe_fd[0]);
+			perror("infile open fail");
+			exit(EXIT_FAILURE);
+		}
+		close(pipe_fd[0]);
+		execute_cmd(cmd, envp, in_fd, pipe_fd[1]);
+	}
+	else
+		close(pipe_fd[1]);
+}
+
+void	execute_second_cmd(char *argv[], char **envp, char **paths, int pipe_fd[2])
+{
+	pid_t	pid;
+	int		out_fd;
+	char	**cmd;
+
+	out_fd = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644); // TODO: probably must open the file in the child process ?, also francinette fails in test 11 if i make it in the child process
+	if (out_fd == -1)
+	{
+		close(pipe_fd[1]);
+		close(pipe_fd[0]);
+		perror("outfile open fail");
+		exit(EXIT_FAILURE);
+	}
+	pid = fork();
+	if (pid == -1)
+	{
+		close(pipe_fd[1]);
+		close(pipe_fd[0]);
+		close(out_fd);
+		perror("fork failed");
+		exit(EXIT_FAILURE);
+	}
+	if (pid == 0)
+	{
+		cmd = create_command(argv[3], paths);
+		if (cmd == NULL)
+		{
+			ft_free_str_matrix(paths);
+			close(pipe_fd[0]);
+			close(pipe_fd[1]);
+			perror("cmd2 creation fail");
+			exit(EXIT_FAILURE);
+		}
+		execute_cmd(cmd, envp, pipe_fd[0], out_fd);
+		// close(pipe_fd[1]); // If i close after read it fails (idk why)
+	}
+	else
+	{
+		close(pipe_fd[0]);
+		close(out_fd);
+	}
+}
+
 char	**get_paths(char **envp)
 {
 	char	**paths;
@@ -165,8 +184,6 @@ void	pipex(char *argv[], char **envp, char **paths)
 {
 	int		pipe_fd[2];
 	int		status;
-	char	**cmd1;
-	char	**cmd2;
 
 	if (pipe(pipe_fd) == -1)
 	{
@@ -174,33 +191,12 @@ void	pipex(char *argv[], char **envp, char **paths)
 		perror("pipe creation fail");
 		exit(EXIT_FAILURE);
 	}
-	cmd1 = create_command(argv[2], paths);
-	if (cmd1 == NULL)
-	{
-		ft_free_str_matrix(paths);
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-		perror("cmd1 creation fail");
-		exit(EXIT_FAILURE);
-	}
-	execute_first_cmd(cmd1, envp, argv[1], pipe_fd);
-	cmd2 = create_command(argv[3], paths);
-	if (cmd2 == NULL)
-	{
-		ft_free_str_matrix(cmd1);
-		ft_free_str_matrix(paths);
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-		perror("cmd2 creation fail");
-		exit(EXIT_FAILURE);
-	}
-	execute_second_cmd(cmd2, envp, pipe_fd, argv[4]);
+	execute_first_cmd(argv, envp, paths, pipe_fd);
+	execute_second_cmd(argv, envp, paths, pipe_fd);
 	close(pipe_fd[0]);
 	close(pipe_fd[1]);
 	wait(&status);
 	wait(&status);
-	ft_free_str_matrix(cmd1);
-	ft_free_str_matrix(cmd2);
 }
 
 int	main(int argc, char *argv[], char **envp)
