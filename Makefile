@@ -8,7 +8,7 @@ RM = rm -f
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SRC = ./src/pipex.c
+SRC = ./src/pipex.c ./src/ft_cmd.c
 OBJ = $(SRC:.c=.o)
 
 INCLUDES = -I./include -I$(LIBFT_DIR)
