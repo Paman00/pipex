@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/20 20:52:37 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/24 20:12:34 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/27 02:04:00 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 
 # include "../libft/libft.h"
 
-# include <sys/types.h> // id_t
+# include <sys/types.h> // pid_t
+
+# include <errno.h> // errno and error codes
 
 # include <fcntl.h> // open
 # include <unistd.h> // close, read, write, access, dup, dup2, execve, fork, pipe, unlink
