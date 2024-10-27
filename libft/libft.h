@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 19:41:11 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/25 22:14:12 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/27 13:20:05 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,5 +80,8 @@ char	**ft_free_str_matrix(char **matrix);
 char	**ft_free_str_matrix_r(char **matrix, size_t i);
 char	***ft_free_str_trimatrix(char ***matrix);
 char	***ft_free_str_trimatrix_r(char ***matrix, size_t i);
+
+char	*get_next_line(int fd);
+char	*get_next_line_max(int fd);
 
 #endif

@@ -1,7 +1,7 @@
 NAME = pipex
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror $(INCLUDES) # -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror $(INCLUDES) -g3 -fsanitize=address
 
 RM = rm -f
 
@@ -16,7 +16,7 @@ INCLUDES = -I./include -I$(LIBFT_DIR)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	make -C $(LIBFT_DIR) --no-print-directory
+	make -C $(LIBFT_DIR) re --no-print-directory
 	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -o $(NAME)
 
 %.o: %.c

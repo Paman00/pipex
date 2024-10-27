@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 20:02:28 by migugar2          #+#    #+#             */
-/*   Updated: 2024/09/17 20:29:07 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/27 10:43:30 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,12 @@
 
 size_t	ft_strlen(const char *s)
 {
-	size_t	l;
+	size_t	len;
 
-	l = 0;
-	while (s[l])
-		l++;
-	return (l);
+	if (s == NULL)
+		return (0);
+	len = 0;
+	while (s[len])
+		len++;
+	return (len);
 }
