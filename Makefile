@@ -11,9 +11,16 @@ LIBFT = $(LIBFT_DIR)/libft.a
 SRC = ./src/pipex.c ./src/ft_cmd.c ./src/pipex_cmd.c
 OBJ = $(SRC:.c=.o)
 
+BONUS_SRC =./src/pipex_bonus.c ./src/ft_cmd.c ./src/pipex_cmd_bonus.c ./src/pipex_heardoc_bonus.c
+OBJ_BONUS = $(BONUS_SRC:.c=.o)
+
 INCLUDES = -I./include -I$(LIBFT_DIR)
 
 all: $(NAME)
+
+bonus: $(OBJ_BONUS)
+	make -C $(LIBFT_DIR) re --no-print-directory
+	$(CC) $(CFLAGS) $(OBJ_BONUS) $(LIBFT) -o $(NAME)
 
 $(NAME): $(OBJ)
 	make -C $(LIBFT_DIR) re --no-print-directory
@@ -23,7 +30,7 @@ $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(RM) $(OBJ)
+	$(RM) $(OBJ) $(OBJ_BONUS)
 	make -C $(LIBFT_DIR) clean --no-print-directory
 
 fclean: clean
