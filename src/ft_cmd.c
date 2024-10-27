@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 02:39:08 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/27 02:52:18 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/27 09:39:18 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,11 @@ char	*get_cmd_path(char *cmd_name, char **paths)
 	char	*cmd_path;
 	size_t	i;
 
-	i = 0;
+	if (cmd_name == NULL)
+		return (NULL);
 	if (ft_strchr(cmd_name, '/') != NULL)
 		return (ft_strdup(cmd_name));
+	i = 0;
 	while (paths[i] != NULL)
 	{
 		cmd_path = ft_strjoin(paths[i], cmd_name);
@@ -62,12 +64,12 @@ char	*get_cmd_path(char *cmd_name, char **paths)
 	return (NULL);
 }
 
-char	**create_cmd(char *cmd, char **paths)
+char	**create_cmd(char *cmd_name, char **paths)
 {
 	char	**command;
 	char	*cmd_path;
 
-	command = ft_split(cmd, ' ');
+	command = ft_split(cmd_name, ' ');
 	if (command == NULL)
 		return (NULL);
 	cmd_path = get_cmd_path(command[0], paths);
@@ -92,15 +94,9 @@ void	execute_cmd(char **command, char **envp, int in_fd, int out_fd)
 	}
 	execve(command[0], command, envp);
 	if (errno == ENOENT)
-	{
-		perror("command not found");
-		exit(127);
-	}
+		exit_pipex(127, "command not found", NULL);
 	if (errno == EACCES)
-	{
-		perror("permission denied");
-		exit(126);
-	}
+		exit_pipex(126, "permission denied", NULL);
 	perror("execve fail");
 	exit(EXIT_FAILURE);
 }

@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 22:45:04 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/27 02:48:50 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/27 10:15:59 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ pid_t	execute_second(char *argv[], char **envp, char **paths, int pipe_fd[2])
 	return (pid);
 }
 
-int	pipex(char *argv[], char **envp, char **paths)
+int	pipex_simple(char *argv[], char **envp, char **paths)
 {
 	int		pipe_fd[2];
 	int		status;
@@ -86,8 +86,7 @@ int	pipex(char *argv[], char **envp, char **paths)
 	if (pipe(pipe_fd) == -1)
 	{
 		ft_free_str_matrix(paths);
-		perror("pipe creation fail");
-		exit(EXIT_FAILURE);
+		exit_pipex(EXIT_FAILURE, "pipe creation fail", NULL);
 	}
 	execute_first(argv, envp, paths, pipe_fd);
 	pid_second = execute_second(argv, envp, paths, pipe_fd);
@@ -116,7 +115,7 @@ int	main(int argc, char *argv[], char **envp)
 		perror("path search failed");
 		exit(EXIT_FAILURE);
 	}
-	exit_code = pipex(argv, envp, paths);
+	exit_code = pipex_simple(argv, envp, paths);
 	ft_free_str_matrix(paths);
 	return (exit_code);
 }
