@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 09:41:39 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/27 19:45:01 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/27 20:20:04 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include <string.h>
 # include <sys/wait.h>
 
-char	*create_file_here_doc(int argc, char *argv[]);
+char	*create_file_here_doc(char *limiter);
 int		here_doc(int argc, char *argv[], char **envp, char **paths);
 
 int		**create_pipes(size_t n_pipes);

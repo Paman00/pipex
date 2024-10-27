@@ -11,7 +11,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 SRC = ./src/pipex.c ./src/ft_cmd.c ./src/pipex_cmd.c
 OBJ = $(SRC:.c=.o)
 
-BONUS_SRC =./src/pipex_bonus.c ./src/ft_cmd.c ./src/pipex_cmd_bonus.c ./src/pipex_heardoc_bonus.c
+BONUS_SRC =./src/pipex_bonus.c ./src/ft_cmd.c ./src/pipex_cmd_bonus.c ./src/pipex_heredoc_bonus.c
 OBJ_BONUS = $(BONUS_SRC:.c=.o)
 
 INCLUDES = -I./include -I$(LIBFT_DIR)

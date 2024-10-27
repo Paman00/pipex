@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 06:08:29 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/27 19:29:46 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/27 20:11:46 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,17 +32,17 @@ int	pipex(int argc, char *argv[], char **envp, char **paths)
 	int		**pipes;
 	pid_t	last_pid;
 	int		status;
-	size_t	i;
+	int		i;
 
 	pipes = create_pipes(argc - 3);
-	execute_first(argv, envp, paths, pipes);
+	execute_first(argv, envp, paths, pipes[0]);
 	i = 1;
 	while (i < argc - 4)
 	{
 		execute_middle(argv[i + 1], envp, paths, pipes + i - 1);
 		i++;
 	}
-	last_pid = execute_last(argv + i + 1, envp, paths, pipes + i - 1);
+	last_pid = execute_last(argv + i + 1, envp, paths, pipes[i - 1]);
 	i = 0;
 	while (i < argc - 4)
 	{
@@ -58,7 +58,6 @@ int	main(int argc, char *argv[], char **envp)
 {
 	char	**paths;
 	int		last_status;
-	pid_t	first;
 
 	if (argc < 5)
 		exit_pipex(22, EINVAL, "argc fail", NULL);
@@ -72,7 +71,7 @@ int	main(int argc, char *argv[], char **envp)
 		last_status = here_doc(argc, argv, envp, paths);
 	}
 	else
-		last_status = iterative_pipex(argc - 1, argv + 1, envp, paths);
+		last_status = pipex(argc - 1, argv + 1, envp, paths);
 	ft_free_str_matrix(paths);
 	if (WIFEXITED(last_status))
 		return (WEXITSTATUS(last_status));

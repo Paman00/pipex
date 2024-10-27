@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 19:19:36 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/27 19:30:02 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/27 20:13:53 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ pid_t	execute_first(char *argv[], char **envp, char **paths, int pipe_fd[2])
 	return (pid);
 }
 
-// must read from the previous pipe ([0]) from read end ([0]) and write to the current pipe ([1]) to write end ([1])
 pid_t	execute_middle(char *cmd_name, char **envp, char **paths, int **pipes)
 {
 	pid_t	pid;
@@ -75,7 +74,7 @@ pid_t	execute_middle(char *cmd_name, char **envp, char **paths, int **pipes)
 	{
 		command = create_cmd(cmd_name, paths);
 		if (command == NULL)
-			exit_pipex(127, errno, command, pipes[0]);
+			exit_pipex(127, errno, command[0], pipes[0]);
 		close(pipes[0][1]);
 		close(pipes[1][0]);
 		execute_cmd(command, envp, pipes[0][0], pipes[1][1]);
@@ -104,7 +103,7 @@ pid_t	execute_last(char *argv[], char **envp, char **paths, int pipe_fd[2])
 	{
 		command = create_cmd(argv[0], paths);
 		if (command == NULL)
-			exit_pipex(127, errno, command, pipe_fd[0]);
+			exit_pipex(127, errno, command[0], pipe_fd);
 		close(pipe_fd[1]);
 		execute_cmd(command, envp, pipe_fd[0], out_fd);
 	}
