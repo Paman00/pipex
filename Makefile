@@ -8,7 +8,7 @@ RM = rm -f
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SRC = ./src/pipex.c ./src/ft_cmd.c
+SRC = ./src/pipex.c ./src/ft_cmd.c ./src/pipex_cmd.c
 OBJ = $(SRC:.c=.o)
 
 INCLUDES = -I./include -I$(LIBFT_DIR)
@@ -32,4 +32,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus
