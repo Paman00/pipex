@@ -6,23 +6,30 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 06:08:29 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/27 20:11:46 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/28 00:01:20 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex_bonus.h"
 
-// ./pipex here_doc limiter cmd1 cmd2 cmdn outfile
-// ./pipex infile cmd1 cmd2 cmdn outfile
+// ./pipex here_doc limiter cmd1 cmd2 cmdn outfile -> pipex: limiter cmd1 cmd2 cmdn outfile -> 5 arguments, 3 commands, 2 pipes
+// ./pipex infile cmd1 cmd2 cmd3 cmd4 cmd5 cmdn outfile -> pipex: infile cmd1 cmd2 cmd3 cmd4 cmd5 cmdn outfile -> 8 arguments, 6 commands, 5 pipes
+// total commands: argc - 4
+// pipes: argc - 3
+// commands in the middle: argc - 4 (index 0 is infile, so from index 1 to argc - 4)
+// first command: index 1
+// last command: index argc - 2
 
-void	exit_pipex(int error, int n_errno, const char *message, int pipe_fd[2])
+// ./pipex infile.txt "grep -v malloc" "grep -v PATH" "grep -v command" "grep -v return" "cat -e" /dev/stdout
+// a
+
+void	exit_pipex(int error, const char *message, int pipe_fd[2])
 {
 	if (pipe_fd != NULL)
 	{
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
 	}
-	errno = n_errno;
 	perror(message);
 	exit(error);
 }
@@ -36,15 +43,15 @@ int	pipex(int argc, char *argv[], char **envp, char **paths)
 
 	pipes = create_pipes(argc - 3);
 	execute_first(argv, envp, paths, pipes[0]);
-	i = 1;
-	while (i < argc - 4)
-	{
-		execute_middle(argv[i + 1], envp, paths, pipes + i - 1);
-		i++;
-	}
-	last_pid = execute_last(argv + i + 1, envp, paths, pipes[i - 1]);
 	i = 0;
 	while (i < argc - 4)
+	{
+		execute_middle(argv[i + 2], envp, paths, pipes + i);
+		i++;
+	}
+	last_pid = execute_last(argv + argc - 2, envp, paths, pipes[argc - 4]);
+	i = 0;
+	while (i < argc - 3)
 	{
 		wait(NULL);
 		i++;
@@ -60,18 +67,24 @@ int	main(int argc, char *argv[], char **envp)
 	int		last_status;
 
 	if (argc < 5)
-		exit_pipex(22, EINVAL, "argc fail", NULL);
+	{
+		errno = EINVAL;
+		exit_pipex(22, "argc fail", NULL);
+	}
 	paths = get_paths(envp);
 	if (paths == NULL)
-		exit_pipex(EXIT_FAILURE, errno, "path search failed", NULL);
+		exit_pipex(EXIT_FAILURE, "path search failed", NULL);
 	if (ft_strncmp(argv[1], "here_doc", 9) == 0)
 	{
 		if (argc < 6)
-			exit_pipex(22, EINVAL, "argc fail", NULL);
+		{
+			errno = EINVAL;
+			exit_pipex(22, "argc fail", NULL);
+		}
 		last_status = here_doc(argc, argv, envp, paths);
 	}
 	else
-		last_status = pipex(argc - 1, argv + 1, envp, paths);
+		last_status = pipex(argc - 1, argv + 1, envp, paths); // !
 	ft_free_str_matrix(paths);
 	if (WIFEXITED(last_status))
 		return (WEXITSTATUS(last_status));

@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 19:19:36 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/27 20:13:53 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/27 23:51:27 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,20 @@ pid_t	execute_first(char *argv[], char **envp, char **paths, int pipe_fd[2])
 	char	**command;
 
 	if (pipe(pipe_fd) == -1)
-		exit_pipex(EXIT_FAILURE, errno, "pipe creation fail", NULL);
+		exit_pipex(EXIT_FAILURE, "pipe creation fail", NULL);
 	pid = fork();
 	if (pid == -1)
-		exit_pipex(EXIT_FAILURE, errno, "fork fail", pipe_fd);
+		exit_pipex(EXIT_FAILURE, "fork fail", pipe_fd);
 	if (pid == 0)
 	{
 		command = create_cmd(argv[1], paths);
 		if (command == NULL)
-			exit_pipex(127, errno, command[0], pipe_fd);
+			exit_pipex(127, argv[1], pipe_fd);
 		in_fd = open(argv[0], O_RDONLY);
 		if (in_fd == -1)
 		{
 			ft_free_str_matrix(command);
-			exit_pipex(EXIT_FAILURE, errno, "infile open fail", pipe_fd);
+			exit_pipex(EXIT_FAILURE, "infile open fail", pipe_fd);
 		}
 		close(pipe_fd[0]);
 		execute_cmd(command, envp, in_fd, pipe_fd[1]);
@@ -66,15 +66,15 @@ pid_t	execute_middle(char *cmd_name, char **envp, char **paths, int **pipes)
 	char	**command;
 
 	if (pipe(pipes[1]) == -1)
-		exit_pipex(EXIT_FAILURE, errno, "pipe creation fail", NULL);
+		exit_pipex(EXIT_FAILURE, "pipe creation fail", NULL);
 	pid = fork();
 	if (pid == -1)
-		exit_pipex(EXIT_FAILURE, errno, "fork fail", pipes[0]);
+		exit_pipex(EXIT_FAILURE, "fork fail", pipes[0]);
 	if (pid == 0)
 	{
 		command = create_cmd(cmd_name, paths);
 		if (command == NULL)
-			exit_pipex(127, errno, command[0], pipes[0]);
+			exit_pipex(127, cmd_name, pipes[0]);
 		close(pipes[0][1]);
 		close(pipes[1][0]);
 		execute_cmd(command, envp, pipes[0][0], pipes[1][1]);
@@ -92,18 +92,18 @@ pid_t	execute_last(char *argv[], char **envp, char **paths, int pipe_fd[2])
 
 	out_fd = open(argv[1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (out_fd == -1)
-		exit_pipex(EXIT_FAILURE, errno, "outfile open fail", pipe_fd);
+		exit_pipex(EXIT_FAILURE, "outfile open fail", pipe_fd);
 	pid = fork();
 	if (pid == -1)
 	{
 		close(out_fd);
-		exit_pipex(EXIT_FAILURE, errno, "outfile open fail", pipe_fd);
+		exit_pipex(EXIT_FAILURE, "outfile open fail", pipe_fd);
 	}
 	if (pid == 0)
 	{
 		command = create_cmd(argv[0], paths);
 		if (command == NULL)
-			exit_pipex(127, errno, command[0], pipe_fd);
+			exit_pipex(127, argv[0], pipe_fd);
 		close(pipe_fd[1]);
 		execute_cmd(command, envp, pipe_fd[0], out_fd);
 	}
