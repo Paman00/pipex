@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 09:41:39 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/27 23:50:38 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/28 20:58:26 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 char	*create_file_here_doc(char *limiter);
 int		here_doc(int argc, char *argv[], char **envp, char **paths);
 
-int		**create_pipes(size_t n_pipes);
+int		**create_pipes(int n_pipes);
 pid_t	execute_first(char *argv[], char **envp, char **paths, int pipe_fd[2]);
 pid_t	execute_middle(char *cmd_name, char **envp, char **paths, int **pipes);
 pid_t	execute_last(char *argv[], char **envp, char **paths, int pipe_fd[2]);

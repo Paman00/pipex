@@ -6,22 +6,18 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 06:08:29 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/28 00:01:20 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/28 21:01:14 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex_bonus.h"
 
-// ./pipex here_doc limiter cmd1 cmd2 cmdn outfile -> pipex: limiter cmd1 cmd2 cmdn outfile -> 5 arguments, 3 commands, 2 pipes
-// ./pipex infile cmd1 cmd2 cmd3 cmd4 cmd5 cmdn outfile -> pipex: infile cmd1 cmd2 cmd3 cmd4 cmd5 cmdn outfile -> 8 arguments, 6 commands, 5 pipes
-// total commands: argc - 4
-// pipes: argc - 3
-// commands in the middle: argc - 4 (index 0 is infile, so from index 1 to argc - 4)
-// first command: index 1
-// last command: index argc - 2
-
 // ./pipex infile.txt "grep -v malloc" "grep -v PATH" "grep -v command" "grep -v return" "cat -e" /dev/stdout
-// a
+// main:
+// argc = 8, commands = 5
+// in pipex function:
+// infile.txt "grep -v malloc" "grep -v PATH" "grep -v command" "grep -v return" "cat -e" /dev/stdout
+// argc = 7, commands = 5, first_command=1 (1), last_command=6 (1), middle_commands=2-5 (3), pipes=4
 
 void	exit_pipex(int error, const char *message, int pipe_fd[2])
 {
@@ -40,24 +36,26 @@ int	pipex(int argc, char *argv[], char **envp, char **paths)
 	pid_t	last_pid;
 	int		status;
 	int		i;
+	int		commands_c;
 
-	pipes = create_pipes(argc - 3);
+	commands_c = argc - 2;
+	pipes = create_pipes(commands_c - 1);
 	execute_first(argv, envp, paths, pipes[0]);
 	i = 0;
-	while (i < argc - 4)
+	while (i < commands_c - 2)
 	{
 		execute_middle(argv[i + 2], envp, paths, pipes + i);
 		i++;
 	}
-	last_pid = execute_last(argv + argc - 2, envp, paths, pipes[argc - 4]);
+	last_pid = execute_last(argv + argc - 2, envp, paths, pipes[commands_c - 2]);
 	i = 0;
-	while (i < argc - 3)
+	while (i < commands_c - 1)
 	{
 		wait(NULL);
 		i++;
 	}
 	waitpid(last_pid, &status, 0);
-	ft_free_int_matrix(pipes, argc - 3);
+	ft_free_int_matrix(pipes, commands_c - 1);
 	return (status);
 }
 

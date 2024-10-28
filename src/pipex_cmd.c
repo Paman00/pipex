@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 19:16:38 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/27 19:31:05 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/28 20:50:44 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ pid_t	execute_second(char *argv[], char **envp, char **paths, int pipe_fd[2])
 {
 	pid_t	pid;
 	int		out_fd;
-	char	**cmd;
+	char	**command;
 
 	out_fd = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (out_fd == -1)
@@ -56,10 +56,10 @@ pid_t	execute_second(char *argv[], char **envp, char **paths, int pipe_fd[2])
 	}
 	if (pid == 0)
 	{
-		cmd = create_cmd(argv[3], paths);
-		if (cmd == NULL)
+		command = create_cmd(argv[3], paths);
+		if (command == NULL)
 			exit_pipex(127, "command not found", pipe_fd);
-		execute_cmd(cmd, envp, pipe_fd[0], out_fd);
+		execute_cmd(command, envp, pipe_fd[0], out_fd);
 	}
 	close(pipe_fd[0]);
 	close(out_fd);

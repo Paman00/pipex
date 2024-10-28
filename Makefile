@@ -1,7 +1,7 @@
 NAME = pipex
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror $(INCLUDES) -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror $(INCLUDES) -g3 # -fsanitize=address
 
 RM = rm -f
 
