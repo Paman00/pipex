@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 19:24:22 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/27 23:52:37 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/10/29 18:41:04 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,21 @@ char	*create_file_here_doc(char *limiter)
 	in_fd = open("temp_file", O_CREAT | O_RDWR | O_TRUNC, 0644);
 	if (in_fd == -1)
 		exit_pipex(EXIT_FAILURE, "temp_file open fail", NULL);
-	limiter_len = ft_strlen(limiter) + 1;
+	limiter_len = ft_strlen(limiter);
 	while (1)
 	{
 		line = get_next_line(STDIN_FILENO);
 		if (line == NULL && errno != 0)
 			exit_pipex(EXIT_FAILURE, "get_next_line fail", NULL);
+		if (line == NULL)
+			break ;
+		if (ft_strlen(line) - 1 == limiter_len
+			&& ft_strncmp(line, limiter, limiter_len) == 0)
+			break ;
 		ft_putstr_fd(line, in_fd);
 		ft_free_str(&line);
-		if (line == NULL || ft_strncmp(line, limiter, limiter_len) == 0)
-			break ;
 	}
+	ft_free_str(&line);
 	close(in_fd);
 	return ("temp_file");
 }
