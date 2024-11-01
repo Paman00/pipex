@@ -8,7 +8,7 @@ RM = rm -f
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SRC = ./src/pipex.c ./src/ft_cmd.c ./src/pipex_cmd.c
+SRC = ./src/pipex.c # ./src/ft_cmd.c ./src/pipex_cmd.c
 OBJ = $(SRC:.c=.o)
 
 BONUS_SRC =./src/pipex_bonus.c # ./src/ft_cmd.c ./src/pipex_cmd_bonus.c ./src/pipex_heredoc_bonus.c

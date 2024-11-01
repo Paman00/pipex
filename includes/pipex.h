@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/20 20:52:37 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/27 19:49:41 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/01 13:14:24 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define PIPEX_H
 
 # include "../libft/libft.h"
-# include "../includes/command.h"
 
 # include <sys/types.h>
 
@@ -26,6 +25,8 @@
 # include <stdio.h>
 # include <string.h>
 # include <sys/wait.h>
+
+// TODO
 
 pid_t	execute_first(char *argv[], char **envp, char **paths, int pipe_fd[2]);
 pid_t	execute_second(char *argv[], char **envp, char **paths, int pipe_fd[2]);
