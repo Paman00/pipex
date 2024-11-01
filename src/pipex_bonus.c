@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 06:08:29 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/01 13:11:02 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/01 14:28:38 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,7 +282,7 @@ int	here_doc_pipex(int argc, char *argv[], char **envp, char **paths)
 	int		i;
 	int		cmdc;
 
-	cmdc = argc - 4;
+	cmdc = argc - 3;
 	pipes = create_pipes(cmdc - 1);
 	if (pipes == NULL)
 		exit_pipex(EXIT_FAILURE, "pipe creation fail", NULL);
