@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 09:41:39 by migugar2          #+#    #+#             */
-/*   Updated: 2024/10/28 20:58:26 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/01 13:13:22 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define PIPEX_BONUS_H
 
 # include "../libft/libft.h"
-# include "../includes/command.h"
 
 # include <sys/types.h>
 
@@ -26,6 +25,8 @@
 # include <stdio.h>
 # include <string.h>
 # include <sys/wait.h>
+
+// TODO
 
 char	*create_file_here_doc(char *limiter);
 int		here_doc(int argc, char *argv[], char **envp, char **paths);
