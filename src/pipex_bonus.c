@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 06:08:29 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/13 15:25:14 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/15 15:08:27 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,15 @@
 // ./pipex here_doc limiter "grep -v malloc" "grep -v PATH" "grep -v command" "grep -v return" "cat -e" /dev/stdout
 
 // errors
-int	set_errno(int nerrno)
+// TODO: change and adapt every error function to libft functions
+int	set_errno(int errnum)
 {
 	if (errno == 0)
-		errno = nerrno;
-	return (nerrno);
+		errno = errnum;
+	return (errnum);
 }
 
+/*
 char	*str_error(int nerrno)
 {
 	if (nerrno == -1)
@@ -36,43 +38,59 @@ char	*str_error(int nerrno)
 	return (strerror(nerrno));
 }
 
-int	print_error(const char *arg)
-{
-	ft_putstr_fd("pipex: ", STDERR_FILENO);
-	if (errno == 0 && arg == NULL)
-		ft_putendl_fd("unknown error", STDERR_FILENO);
-	if (errno != 0)
-	{
-		if (arg != NULL)
-		{
-			ft_putstr_fd(str_error(errno), STDERR_FILENO);
-			ft_putstr_fd(": ", STDERR_FILENO);
-		}
-		else
-			ft_putendl_fd(str_error(errno), STDERR_FILENO);
-	}
-	if (arg != NULL)
-		ft_putendl_fd((char *)arg, STDERR_FILENO);
-	return (errno);
-}
-
 int	p_nerror(const char *arg, int nerror)
 {
 	errno = nerror;
 	return (print_error(arg));
 }
+*/
 
-// TODO: change exit_pipex to exit from forked processes,
-int	exit_forked(int error, const char *arg, int pipe_fd[2])
+int	cmd_not_found(const char *command)
 {
+	if (command == NULL)
+		ft_printf_error("pipex: command not found\n");
+	else
+		ft_printf_error("pipex: command not found: %s\n", command);
+	return (127);
+}
+
+int	perror_pipex(int errnum, const char *arg)
+{
+	ft_printf_error("pipex: ");
+	ft_perror(errnum, arg);
+	return (errnum);
+}
+
+int	perrno_pipex(const char *arg)
+{
+	int	errnum;
+
+	errnum = errno;
+	ft_printf_error("pipex: ");
+	ft_perror(errnum, arg);
+	return (errnum);
+}
+
+int	exit_forked(const char *arg, int pipe_fd[2])
+{
+	int	errnum;
+
+	errnum = errno;
 	if (pipe_fd != NULL)
 	{
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
 	}
-	print_error(arg);
-	exit(error);
-	return (error);
+	if (errnum == ENOENT)
+		exit(cmd_not_found(arg));
+	if (errnum == EACCES)
+	{
+		perrno_pipex(arg);
+		exit(126);
+	}
+	perrno_pipex(arg);
+	exit(EXIT_FAILURE);
+	return (errnum);
 }
 
 int	exit_pipex(int error, const char *message, int pipe_fd[2])
@@ -117,8 +135,8 @@ char	*get_cmd_path(char *cmd_name, char **paths)
 			return (set_errno(ENOMEM), NULL);
 		if (access(cmd_path, X_OK) == 0)
 			return (cmd_path);
+		ft_free_str(&cmd_path);
 		errno = 0;
-		free(cmd_path);
 		i++;
 	}
 	return (NULL);
@@ -143,30 +161,29 @@ char	**create_cmd(char *cmd_name, char **paths)
 // command execution
 void	execute_cmd(char **command, char **envp, int in_fd, int out_fd)
 {
+	int	errnum;
+
 	if (dup2(in_fd, 0) == -1)
 	{
+		errnum = errno;
 		close(in_fd);
 		close(out_fd);
 		ft_free_str_matrix(command);
-		exit_forked(EXIT_FAILURE, NULL, NULL);
+		errno = errnum;
+		exit_forked(NULL, NULL);
 	}
 	close(in_fd);
 	if (dup2(out_fd, 1) == -1)
 	{
+		errnum = errno;
 		close(out_fd);
 		ft_free_str_matrix(command);
-		exit_forked(EXIT_FAILURE, NULL, NULL);
+		errno = errnum;
+		exit_forked(NULL, NULL);
 	}
 	close(out_fd);
 	execve(command[0], command, envp);
-	// print_error(command[0]);
-	print_error("Hola");
-	ft_free_str_matrix(command);
-	if (errno == ENOENT)
-		exit(127);
-	if (errno == EACCES)
-		exit(126);
-	exit(EXIT_FAILURE);
+	exit(exit_forked(command[0], NULL));
 }
 
 pid_t	execute_first(char *argv[], char **envp, char **paths, int pipe_fd[2])
@@ -186,7 +203,7 @@ pid_t	execute_first(char *argv[], char **envp, char **paths, int pipe_fd[2])
 	{
 		command = create_cmd(argv[1], paths);
 		if (command == NULL)
-			exit_forked(127, argv[1], pipe_fd);
+			exit_forked(argv[1], pipe_fd);
 		in_fd = open(argv[0], O_RDONLY);
 		if (in_fd == -1)
 		{

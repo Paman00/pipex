@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: migugar2 <migugar2@student.42.fr>          +#+  +:+       +#+        */
+/*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/20 20:52:37 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/01 13:14:24 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/14 22:30:01 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
-# include "../libft/libft.h"
+# include "libft.h"
 
 # include <sys/types.h>
 
