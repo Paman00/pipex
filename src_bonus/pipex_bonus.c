@@ -1,29 +1,13 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_bonus.h                                      :+:      :+:    :+:   */
+/*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/27 09:41:39 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/16 16:36:18 by migugar2         ###   ########.fr       */
+/*   Created: 2024/10/27 06:08:29 by migugar2          #+#    #+#             */
+/*   Updated: 2024/11/16 16:37:52 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_BONUS_H
-# define PIPEX_BONUS_H
-
-# include "libft.h"
-
-# include <sys/types.h>
-
-# include <errno.h>
-
-# include <fcntl.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <stdio.h>
-# include <string.h>
-# include <sys/wait.h>
-
-#endif
+#include "pipex_bonus.h"

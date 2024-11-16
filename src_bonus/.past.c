@@ -1,15 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_bonus.c                                      :+:      :+:    :+:   */
+/*   pipex_bonus_past.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 06:08:29 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/15 15:08:27 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/16 16:37:29 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+/*
 #include "../includes/pipex_bonus.h"
 
 // ./pipex infile.txt "grep -v malloc" "grep -v PATH" "grep -v command" "grep -v return" "cat -e" /dev/stdout
@@ -43,7 +44,7 @@ int	p_nerror(const char *arg, int nerror)
 	errno = nerror;
 	return (print_error(arg));
 }
-*/
+*
 
 int	cmd_not_found(const char *command)
 {
@@ -529,7 +530,7 @@ int	main(int argc, char *argv[], char **envp)
 	return (EXIT_FAILURE);
 }
 
-/*
+*
 void	pipex(int argc, char *argv[], char **envp, int *last_status)
 {
 	char	**paths;
@@ -589,8 +590,9 @@ int	main(int argc, char *argv[], char **envp)
 		return (WEXITSTATUS(last_status));
 	return (EXIT_FAILURE);
 }
-*/
+*
 
 // With the get_next_line function, read from stdin until EOF or the delimiter is found with something like ft_strncmp(get_next_line(0), argv[2], ft_strlen(argv[2])) == 0, or return NULL
 // I can read and while i'm reading, write to a temporal file, then close the file and open it, executing pipex with the temporal file as the infile
 // Also i must close the file and delete it after the last command is executed
+*/
