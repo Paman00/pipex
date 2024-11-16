@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 22:45:04 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/16 19:54:23 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/16 21:26:46 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,7 @@ int	main(int argc, char *argv[], char **envp)
 	status_last = pipex(argv, envp);
 	if (WIFEXITED(status_last))
 		return (WEXITSTATUS(status_last));
+	else if (WIFSIGNALED(status_last))
+		return (WTERMSIG(status_last) + 128);
 	return (EXIT_FAILURE);
 }

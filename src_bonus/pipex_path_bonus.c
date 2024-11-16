@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_path.c                                       :+:      :+:    :+:   */
+/*   pipex_path_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/16 17:03:35 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/16 21:27:12 by migugar2         ###   ########.fr       */
+/*   Created: 2024/11/16 21:25:04 by migugar2          #+#    #+#             */
+/*   Updated: 2024/11/16 22:26:31 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 int	get_envp_paths(char	***path, char **envp)
 {
@@ -41,6 +41,7 @@ int	get_envp_paths(char	***path, char **envp)
 	return (-1);
 }
 
+// if fails and errno is not set, is command not found
 int	get_cmd_path(char **cmd_path, const char *cmd_name, char **envp)
 {
 	size_t	i;

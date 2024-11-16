@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/20 20:52:37 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/16 19:04:54 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/16 21:21:40 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,16 @@
 # include <string.h>
 # include <sys/wait.h>
 
+int		error_handler_default(const char *arg);
 int		error_handler(int error_code, const char *arg);
-
-int		get_envp_paths(char	***path, char **envp);
-int		get_cmd_path(char **cmd_path, const char *cmd_name, char **envp);
-
 void	exit_execute_error(int errnum, char *command_name);
+
 int		execute_cmd(char *command_name, char **envp, int in_fd, int out_fd);
 pid_t	execute_first(char *argv[], char **envp, int pipe_fd[2]);
 pid_t	execute_second(char *argv[], char **envp, int pipe_fd[2]);
+
+int		get_envp_paths(char	***path, char **envp);
+int		get_cmd_path(char **cmd_path, const char *cmd_name, char **envp);
 
 int		pipex(char *argv[], char **envp);
 
