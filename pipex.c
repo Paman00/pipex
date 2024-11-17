@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 22:45:04 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/16 21:26:46 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/17 22:49:19 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,18 @@ int	pipex(char *argv[], char **envp)
 {
 	int		pipe_fd[2];
 	int		status;
+	pid_t	pid_first;
 	pid_t	pid_second;
 
 	if (pipe(pipe_fd) == -1)
 		exit(error_handler(0, NULL));
-	execute_first(argv, envp, pipe_fd);
+	pid_first = execute_first(argv, envp, pipe_fd);
+	if (pid_first == -1)
+		exit(error_handler(0, NULL));
 	pid_second = execute_second(argv, envp, pipe_fd);
-	ft_close(&pipe_fd[0]);
-	ft_close(&pipe_fd[1]);
-	wait(NULL);
+	waitpid(pid_first, NULL, 0);
+	if (pid_second == -1)
+		exit(error_handler(0, NULL));
 	waitpid(pid_second, &status, 0);
 	return (status);
 }

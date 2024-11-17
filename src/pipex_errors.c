@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 19:00:56 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/16 21:27:24 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/17 22:25:47 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,14 @@ int	error_handler(int error_code, const char *arg)
 
 void	exit_execute_error(int errnum, char *command_name)
 {
+	int	status;
+
 	seterrno(errnum);
 	if (errnum == ENOENT)
-		exit(error_handler(2, command_name));
-	if (errnum == EACCES)
-		exit(error_handler(3, command_name));
-	exit(error_handler(0, NULL));
+		status = error_handler(2, command_name);
+	else if (errnum == EACCES)
+		status = error_handler(3, command_name);
+	else
+		status = error_handler(0, command_name);
+	exit(status);
 }

@@ -1,7 +1,7 @@
 NAME = pipex
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror $(INCLUDES) -g3 -fsanitize=address,leak,undefined
+CFLAGS = -Wall -Wextra -Werror $(INCLUDES) # -g3 -fsanitize=address,leak,undefined
 
 RM = rm -f
 
@@ -18,9 +18,9 @@ INCLUDES = -I./includes -I$(LIBFT_DIR)/includes
 
 all: $(NAME)
 
-bonus: $(OBJ_BONUS)
-	make -C $(LIBFT_DIR) re --no-print-directory
-	$(CC) $(CFLAGS) $(OBJ_BONUS) $(LIBFT) -o $(NAME)
+#bonus: $(OBJ_BONUS)
+#	make -C $(LIBFT_DIR) re --no-print-directory
+#	$(CC) $(CFLAGS) $(OBJ_BONUS) $(LIBFT) -o $(NAME)
 
 $(NAME): $(OBJ)
 	make -C $(LIBFT_DIR) re --no-print-directory
