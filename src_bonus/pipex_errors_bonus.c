@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 21:18:55 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/16 22:32:29 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/17 23:10:02 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,8 @@ int	error_handler(int error_code, const char *arg)
 
 int	error_handler_free(int error_code, char *arg)
 {
-	int	errnum;
 	int	status;
 
-	errnum = errno;
 	status = error_handler(error_code, arg);
 	ft_freestr(&arg);
 	return (status);

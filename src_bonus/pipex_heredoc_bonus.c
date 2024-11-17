@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 21:23:41 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/16 22:53:48 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/18 00:11:56 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,11 @@ char	*create_tmpfile_name(char *basename)
 	return (ft_freestr(&tmpfile_name), ft_freestr(&tmp), seterrno(17), NULL);
 }
 
-char	*read_in_tmpfile(int in_fd, char *limiter)
+char	*read_in_tmpfile(int in_fd, char *limiter, size_t limiter_len)
 {
 	char	*tmpfile_name;
 	int		out_fd;
 	char	*line;
-	size_t	limiter_len;
 
 	tmpfile_name = create_tmpfile_name("tmpfile_read");
 	if (tmpfile_name == NULL)
@@ -54,9 +53,9 @@ char	*read_in_tmpfile(int in_fd, char *limiter)
 	out_fd = open(tmpfile_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (out_fd == -1)
 		exit(error_handler_free(0, tmpfile_name));
-	limiter_len = ft_strlen(limiter);
 	while (1)
 	{
+		ft_printf(PS2);
 		line = get_next_line(in_fd);
 		if (line == NULL && errno != 0)
 			return (ft_close(&out_fd), ft_freestr(&line),
@@ -67,19 +66,22 @@ char	*read_in_tmpfile(int in_fd, char *limiter)
 		ft_printf_fd(out_fd, "%s", line);
 		ft_freestr(&line);
 	}
-	return (ft_close(&in_fd), ft_freestr(&line), tmpfile_name);
+	return (ft_close(&out_fd), ft_freestr(&line), tmpfile_name);
 }
 
+// ./pipex here_doc limiter cmd1 cmd2 cmd3 cmd4 cmd5 outfile
+// argc = 9, commands = 5, pipex must receive argc = 8 from here_doc
 int	here_doc(int argc, char *argv[], char **envp)
 {
 	char	*tmpfile;
+	int		last_status;
 
-	tmpfile = read_in_tmpfile(0, argv[2]);
+	tmpfile = read_in_tmpfile(0, argv[2], ft_strlen(argv[2]));
 	if (tmpfile == NULL)
 		exit(error_handler(0, NULL));
-
+	argv[2] = tmpfile;
+	last_status = pipex(argc - 1, argv + 1, envp,
+			O_CREAT | O_WRONLY | O_APPEND);
 	unlink(tmpfile);
-	(void)envp;
-	(void)argc;
-	return (ft_freestr(&tmpfile), 0);
+	return (ft_freestr(&tmpfile), last_status);
 }

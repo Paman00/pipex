@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 17:35:22 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/17 22:55:49 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/18 00:17:45 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,12 @@ int	execute_cmd(char *command_name, char **envp, int in_fd, int out_fd)
 	if (in_fd != STDIN_FILENO)
 	{
 		dup2(in_fd, STDIN_FILENO);
-		close(in_fd);
+		ft_close(&in_fd);
 	}
 	if (out_fd != STDOUT_FILENO)
 	{
 		dup2(out_fd, STDOUT_FILENO);
-		close(out_fd);
+		ft_close(&out_fd);
 	}
 	execve(pathname, argv, envp);
 	return (ft_freestrarr(&argv), ft_freestr(&pathname), -1);
