@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 06:08:29 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/18 00:28:07 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/18 11:18:25 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,16 +44,20 @@ int	main(int argc, char *argv[], char **envp)
 {
 	int	last_status;
 
-	if (argc < 5)
+	if (argc == 1)
 		exit(error_handler(1, argv[0]));
-	if (ft_strncmp(argv[1], "here_doc", 9) == 0)
+	else if (ft_strncmp(argv[1], "here_doc", 9) == 0)
 	{
 		if (argc < 6)
-			exit(error_handler(1, argv[0]));
+			exit(error_handler(4, argv[0]));
 		last_status = here_doc(argc, argv, envp);
 	}
 	else
+	{
+		if (argc < 5)
+			exit(error_handler(1, argv[0]));
 		last_status = pipex(argc, argv, envp, O_CREAT | O_WRONLY | O_TRUNC);
+	}
 	if (last_status == -1)
 		return (error_handler(0, NULL));
 	else if (WIFEXITED(last_status))

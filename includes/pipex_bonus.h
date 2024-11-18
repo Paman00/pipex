@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 09:41:39 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/18 00:28:56 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/18 11:15:30 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@
 # include <string.h>
 # include <sys/wait.h>
 
-int		error_handler_default(const char *arg);
 int		error_handler(int error_code, const char *arg);
 int		error_handler_free(int error_code, char *arg);
 void	exit_execute_error(int errnum, char *command_name);
