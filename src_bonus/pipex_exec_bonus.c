@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 21:24:33 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/18 00:38:28 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/18 13:52:19 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	execute_first(char *cmd_name, char **envp, char *file_name)
 		return (ft_close(&pipe_fd[0]), ft_close(&pipe_fd[1]), -1);
 	if (pid == 0)
 	{
-		in_fd = open(file_name, O_RDONLY | O_CREAT, 0644);
+		in_fd = open(file_name, O_RDONLY);
 		ft_close(&pipe_fd[0]);
 		if (in_fd == -1)
 			exit(error_handler(0, file_name));
