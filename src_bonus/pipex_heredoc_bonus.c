@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 21:23:41 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/18 00:11:56 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/18 00:27:41 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,6 @@ char	*read_in_tmpfile(int in_fd, char *limiter, size_t limiter_len)
 	return (ft_close(&out_fd), ft_freestr(&line), tmpfile_name);
 }
 
-// ./pipex here_doc limiter cmd1 cmd2 cmd3 cmd4 cmd5 outfile
-// argc = 9, commands = 5, pipex must receive argc = 8 from here_doc
 int	here_doc(int argc, char *argv[], char **envp)
 {
 	char	*tmpfile;

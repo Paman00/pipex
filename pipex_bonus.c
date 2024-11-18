@@ -6,16 +6,12 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 06:08:29 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/18 00:09:27 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/18 00:28:07 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
-// ./pipex here_doc limiter cmd1 cmd2 cmd3 cmd4 cmd5 outfile
-// argc = 9, commands = 5, pipex must receive argc = 8 from here_doc
-// ./pipex infile cmd1 cmd2 cmd3 cmd4 outfile
-// argc = 7, commands = 4
 int	pipex(int argc, char *argv[], char **envp, int oflag)
 {
 	pid_t	last_pid;

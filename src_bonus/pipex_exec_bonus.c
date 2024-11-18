@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 21:24:33 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/17 23:58:21 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/18 00:38:28 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,12 +122,16 @@ pid_t	execute_last(char *argv_last[], char **envp, int pipe_in, int oflag)
 
 void	wait_processes(int waitc)
 {
+	int	errnum;
 	int	i;
 
+	errnum = errno;
 	i = 0;
 	while (i < waitc)
 	{
-		wait(NULL);
+		if (wait(NULL) == -1)
+			i = waitc;
 		i++;
 	}
+	seterrno(errnum);
 }

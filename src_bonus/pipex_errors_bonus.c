@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 21:18:55 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/17 23:10:02 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/18 00:26:37 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ int	error_handler_default(const char *arg)
 	return (EXIT_FAILURE);
 }
 
-// 1-argc fail, 2-cmd not found, 3-permission denied, 0-errno
 int	error_handler(int error_code, const char *arg)
 {
 	if (error_code == 0)

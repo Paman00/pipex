@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 09:41:39 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/17 23:09:56 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/18 00:28:56 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ pid_t	execute_last(char *argv_last[], char **envp, int pipe_in, int oflag);
 
 void	wait_processes(int waitc);
 
-# define PS2 "\033[31m |> \033[0m"
+# define PS2 "heredoc\033[31m|> \033[0m"
 
 char	*create_tmpfile_name(char *basename);
 char	*read_in_tmpfile(int in_fd, char *limiter, size_t limiter_len);
