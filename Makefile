@@ -21,25 +21,21 @@ all: $(NAME)
 bonus: $(OBJ_BONUS)
 	make -C $(LIBFT_DIR) re --no-print-directory
 	$(CC) $(CFLAGS) $(OBJ_BONUS) $(LIBFT) -o $(NAME)
-	make -C $(LIBFT_DIR) fclean --no-print-directory
-	make clean --no-print-directory
 
 $(NAME): $(OBJ)
 	make -C $(LIBFT_DIR) re --no-print-directory
 	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -o $(NAME)
-	make -C $(LIBFT_DIR) fclean --no-print-directory
-	make clean --no-print-directory
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(RM) $(OBJ) $(OBJ_BONUS)
 	make -C $(LIBFT_DIR) clean --no-print-directory
+	$(RM) $(OBJ) $(OBJ_BONUS)
 
 fclean: clean
-	$(RM) $(NAME)
 	make -C $(LIBFT_DIR) fclean --no-print-directory
+	$(RM) $(NAME)
 
 re: fclean all
 
