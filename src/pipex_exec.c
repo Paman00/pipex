@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 17:35:22 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/18 00:17:45 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/19 17:30:47 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,13 @@ int	execute_cmd(char *command_name, char **envp, int in_fd, int out_fd)
 	char	**argv;
 	char	*pathname;
 
+	if (command_name == NULL)
+		return (seterrno(ENOENT), -1);
 	argv = ft_split(command_name, ' ');
 	if (argv == NULL)
 		return (seterrno(ENOMEM), -1);
+	if (argv[0] == NULL || argv[0][0] == '\0')
+		return (ft_freestrarr(&argv), seterrno(ENOENT), -1);
 	pathname = NULL;
 	if (get_cmd_path(&pathname, argv[0], envp) == -1)
 		return (ft_freestrarr(&argv), ft_freestr(&pathname), -1);
@@ -41,6 +45,7 @@ pid_t	execute_first(char *argv[], char **envp, int pipe_fd[2])
 {
 	pid_t	pid;
 	int		in_fd;
+	int		errnum;
 
 	pid = fork();
 	if (pid == -1)
@@ -53,9 +58,10 @@ pid_t	execute_first(char *argv[], char **envp, int pipe_fd[2])
 			exit(error_handler(0, argv[1]));
 		if (execute_cmd(argv[2], envp, in_fd, pipe_fd[1]) == -1)
 		{
+			errnum = errno;
 			ft_close(&pipe_fd[1]);
 			ft_close(&in_fd);
-			exit_execute_error(errno, argv[2]);
+			exit_execute_error(errnum, argv[2]);
 		}
 	}
 	ft_close(&pipe_fd[1]);
@@ -66,6 +72,7 @@ pid_t	execute_second(char *argv[], char **envp, int pipe_fd[2])
 {
 	pid_t	pid;
 	int		out_fd;
+	int		errnum;
 
 	pid = fork();
 	if (pid == -1)
@@ -80,9 +87,9 @@ pid_t	execute_second(char *argv[], char **envp, int pipe_fd[2])
 		}
 		if (execute_cmd(argv[3], envp, pipe_fd[0], out_fd) == -1)
 		{
-			ft_close(&pipe_fd[0]);
+			errnum = errno;
 			ft_close(&out_fd);
-			exit_execute_error(errno, argv[3]);
+			exit_execute_error(errnum, argv[3]);
 		}
 	}
 	ft_close(&pipe_fd[0]);

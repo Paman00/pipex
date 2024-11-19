@@ -6,7 +6,7 @@
 /*   By: migugar2 <migugar2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 17:03:35 by migugar2          #+#    #+#             */
-/*   Updated: 2024/11/16 21:27:12 by migugar2         ###   ########.fr       */
+/*   Updated: 2024/11/19 15:08:21 by migugar2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	get_cmd_path(char **cmd_path, const char *cmd_name, char **envp)
 	}
 	paths = NULL;
 	if (get_envp_paths(&paths, envp) == -1)
-		return (-1);
+		return (seterrno(ENOENT), -1);
 	i = 0;
 	while (paths != NULL && paths[i] != NULL)
 	{
@@ -67,5 +67,5 @@ int	get_cmd_path(char **cmd_path, const char *cmd_name, char **envp)
 		ft_freestr(cmd_path);
 		i++;
 	}
-	return (ft_freestrarr(&paths), -1);
+	return (ft_freestrarr(&paths), seterrno(ENOENT), -1);
 }
